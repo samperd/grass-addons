@@ -1,0 +1,38 @@
+{
+    "version": "1.0.0",
+    "project": {
+        "name": "grass-addons",
+        "type": "geospatial-tools",
+        "description": "GRASS GIS add-ons - additional tools and extensions for the GRASS GIS system"
+    },
+    "paths": {
+        "root": ".",
+        "src": "src",
+        "tests": "pytest",
+        "docs": "doc"
+    },
+    "languages": ["c", "python"],
+    "frameworks": {
+        "build": ["autotools", "cmake"],
+        "testing": ["pytest", "gunittest"],
+        "gis": ["grass-gis"]
+    },
+    "openagent": {
+        "context": {
+            "load_standards": true,
+            "load_agents": true,
+            "load_workflows": true
+        },
+        "execution": {
+            "require_approval": true,
+            "stop_on_failure": true,
+            "report_first": true
+        }
+    },
+    "git": {
+        "hooks": {
+            "enabled": true,
+            "pre_commit": "pre-commit run --all-files"
+        }
+    }
+}
