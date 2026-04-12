@@ -6,6 +6,16 @@ Create a "User Addons" top-level menu in GRASS wxGUI at the same level as "File"
 
 The "Addon Extensions" section will be moved from the "Settings" menu to the "User Addons" menu.
 
+## Status: IMPLEMENTED ✓
+
+This plan has been implemented. Current structure:
+
+- `g.tools.py` - Main module (status + GUI only)
+- `install.sh` - Installs addon + runs menu-install.sh
+- `uninstall.sh` - Removes addon + runs menu-uninstall.sh
+- `menu-install.sh` - Creates menu XML files
+- `menu-uninstall.sh` - Removes menu XML files
+
 ## Current GRASS Menu Structure
 
 The current GRASS wxGUI menu has these top-level menus:
@@ -95,8 +105,8 @@ Create `g.tools` uninstall script that:
 
 ## Exit Criteria
 
-- [ ] "User Addons" menu appears in GRASS wxGUI
-- [ ] "Addon Extensions" accessible from User Addons
-- [ ] Install script works without errors
-- [ ] Uninstall script restores previous state
-- [ ] Other addons can depend on g.tools for menu location
+- [x] "User Addons" menu appears in GRASS wxGUI
+- [x] "Addon Extensions" accessible from User Addons
+- [x] Install script works without errors
+- [x] Uninstall script restores previous state
+- [x] Other addons can depend on g.tools for menu location

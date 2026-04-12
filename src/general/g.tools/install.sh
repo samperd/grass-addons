@@ -4,7 +4,7 @@
 # This script installs the g.tools addon and integrates it into the GRASS wxGUI menu
 
 # Configuration
-LOCATION="/home/sampson/grassdata/newLocation/PERMANENT"
+LOCATION="/home/sampson/grassdata/Sample_Python_Addon/PERMANENT"
 MODULE="g.tools"
 SCRIPT_DIR="$(dirname "$0")"
 
@@ -44,7 +44,7 @@ fi
 if [ "$ADDON_ALREADY_INSTALLED" = false ]; then
     echo ""
     echo "Installing User Addons menu..."
-    if grass "$LOCATION" --exec g.tools action=install 2>&1; then
+    if bash "$SCRIPT_DIR/menu-install.sh" 2>&1; then
         echo "Menu installed successfully."
     else
         echo "WARNING: Menu installation may have failed."

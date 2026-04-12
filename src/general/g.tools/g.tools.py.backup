@@ -1,11 +1,14 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 ##############################################################################
 # MODULE:    g.tools
 #
-# AUTHOR(S): GRASS Development Team
+# PURPOSE:   User Addons menu integration and management
+#            - Adds "User Addons" top-level menu to GRASS wxGUI
+#            - Provides CLI and GUI interfaces for menu management
 #
-# PURPOSE:   User Addons menu integration for GRASS GIS
+# AUTHOR(S): GRASS Development Team
 #
 # COPYRIGHT: (C) 2026 by the GRASS Development Team
 #
@@ -14,7 +17,13 @@
 #            for details.
 ##############################################################################
 
-"""User Addons menu integration for GRASS GIS."""
+"""User Addons menu integration for GRASS GIS.
+
+This module provides:
+- Status checking for User Addons menu
+- Shell script delegation for install/uninstall
+- GUI dialog for interactive menu management
+"""
 
 # %module
 # % description: User Addons menu integration for GRASS GIS
@@ -23,12 +32,21 @@
 # % keyword: addon
 # % keyword: wxgui
 # %end
+# %option
+# % key: action
+# % type: string
+# % required: no
+# % label: Action to perform
+# % description: Action to perform (status, install, uninstall, list)
+# % answer: status
+# % options: status|install|uninstall|list
+# % guisection: General
+# %end
 # %flag
 # % key: g
 # % description: Launch GUI dialog
 # % guisection: Interface
 # %end
-
 
 import subprocess
 import sys
@@ -125,19 +143,23 @@ if WXPYTHON_AVAILABLE:
         def init_ui(self):
             main_sizer = wx.BoxSizer(wx.VERTICAL)
             
+            # Title
             title = wx.StaticText(self, label="User Addons Menu")
             font = wx.Font(14, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD)
             title.SetFont(font)
             main_sizer.Add(title, 0, wx.ALIGN_CENTER | wx.ALL, 15)
             
+            # Status
             status = get_menu_status()
             status_text = "Installed" if status["user_addons_installed"] else "Not installed"
             status_label = wx.StaticText(self, label=f"Status: {status_text}")
             main_sizer.Add(status_label, 0, wx.LEFT | wx.RIGHT, 15)
             
+            # Info
             info = wx.StaticText(self, label=f"Available menus: {len(status['available_menus'])}")
             main_sizer.Add(info, 0, wx.LEFT | wx.RIGHT, 15)
             
+            # Button bar
             button_sizer = wx.BoxSizer(wx.HORIZONTAL)
             
             run_btn = wx.Button(self, label="&Run")
@@ -189,15 +211,50 @@ def main():
         sys.argv = [a for a in sys.argv if a != "--gui"]
     
     options, flags = gs.parser()
+    action = options.get("action", "status")
     gui_mode = flags.get("g", False) or has_gui
     
     if gui_mode:
         show_gui()
     else:
-        status = get_menu_status()
-        state = "Installed" if status["user_addons_installed"] else "Not installed"
-        gs.message(f"User Addons menu: {state}")
-        gs.message(f"Available menus: {len(status['available_menus'])}")
+        if action == "status":
+            status = get_menu_status()
+            state = "Installed" if status["user_addons_installed"] else "Not installed"
+            gs.message(f"User Addons menu: {state}")
+            gs.message(f"Available menus: {len(status['available_menus'])}")
+        elif action == "install":
+            gs.message("Installing User Addons menu...")
+            code, stdout, stderr = run_script("menu-install.sh")
+            if stdout:
+                gs.message(stdout)
+            if stderr:
+                gs.warning(stderr)
+            if code == 0:
+                gs.message("User Addons menu installed successfully.")
+                gs.message("Restart GRASS wxGUI to see changes.")
+                return 0
+            else:
+                gs.warning(f"Menu installation may have failed (exit code: {code}).")
+                return 1
+        elif action == "uninstall":
+            gs.message("Uninstalling User Addons menu...")
+            code, stdout, stderr = run_script("menu-uninstall.sh")
+            if stdout:
+                gs.message(stdout)
+            if stderr:
+                gs.warning(stderr)
+            if code == 0:
+                gs.message("User Addons menu removed successfully.")
+                gs.message("Restart GRASS wxGUI to see changes.")
+                return 0
+            else:
+                gs.warning(f"Menu uninstallation may have failed (exit code: {code}).")
+                return 1
+        elif action == "list":
+            for menu in list_menus():
+                gs.message(menu)
+        else:
+            gs.warning(f"Unknown action: {action}")
     
     return 0
 

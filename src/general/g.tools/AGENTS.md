@@ -14,9 +14,7 @@ make MODULE_TOPDIR=/path/to/grass
 ## Run
 
 ```bash
-g.tools                     # Show status
-g.tools action=install     # Install User Addons menu
-g.tools action=list        # List available menus
+g.tools                     # Show status (default)
 g.tools -g                 # Launch GUI dialog
 ```
 
