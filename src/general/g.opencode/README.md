@@ -1,60 +1,124 @@
-# Opencode custom tools for GRASS GIS
+# g.opencode - OpenCode AI Assistant for GRASS GIS
 
 [![GRASS GIS module](https://img.shields.io/badge/GRASS%20GIS-module-%23009000)](https://grass.osgeo.org/)
 
-This project develops custom OpenCode tools for GRASS GIS, focusing on:
-* Creating custom tools for GRASS GIS functionality
-* Integrating with OpenCode for enhanced development
-* Providing examples of tool development patterns
-* Maintaining documentation and testing for reliability
+g.opencode is a GRASS GIS addon that provides an AI assistant interface, allowing users to interact with OpenCode directly from within the GRASS GIS environment.
 
-## How to use this project
+## Purpose
 
-### Getting Started
+g.opencode brings OpenCode AI assistance to GRASS GIS users:
 
-To contribute to this project:
+- **Ask questions** about GRASS commands and workflows
+- **Get help** building GRASS GIS addons
+- **Automate** GIS analysis with AI assistance
 
-* Clone the repository using Git.
-* Explore the .opencode/tool/ directory for existing tools.
-* Follow the development guidelines in AGENTS.md.
+Example usage:
+```
+g.opencode prompt="what command should I use to find the intersection of two vectors"
+g.opencode prompt="how do I merge two raster maps" server="127.0.0.1"
+```
 
+## Features
 
+- **CLI Interface** - Run from GRASS terminal with `g.opencode`
+- **Auto-GUI** - Graphical interface generated automatically via g.parser
+- **Configurable** - Store server settings for reusability
+- **Verbose/Quiet modes** - Control output verbosity
 
-### Getting the GitHub Actions work
+## Requirements
 
-If you have the repository on GitHub, you can also reuse the GitHub
-Actions defined in the repository (under `.github`). Initially, most of
-them will fail, but once you do the renaming, most of them should start
-working.
+- GRASS GIS 8.x
+- Python 3.8+
+- Network access to OpenCode server (local or remote)
 
-For the workflow uploading documentation to GitHub Pages to
-work, you will need you to
-[set up Deploy key and a Secret](https://github.com/marketplace/actions/github-pages-action#1-add-ssh-deploy-key)
-for your repository. Once the keys are in place, the online documentation
-will be published as GitHub Pages website automatically.
-The URL for the website is available in the Settings of your repository.
+## Installation
 
-## Files which usually are not part of a module
+### Option 1: From GRASS Addons (when published)
 
-These are the files in this repository which usually are not part of
-a GRASS GIS module source code, but are useful for a standalone repository.
+```bash
+g.extension extension=g.opencode url=<addon_repo_url>
+```
 
-* README (README.md) is very useful for a standalone repository,
-  but is not required for a GRASS GIS module because installation,
-  code contributions, etc. are already described in the main repository.
-* LICENSE file makes it easier to identify the license (even when the
-  license is specified elsewhere). It is not required for the modules
-  in the main repository as there is a license file already included.
-* Files in .github/ directory for GitHub Actions, Continuous Integration, etc.
+### Option 2: Development Installation
 
-## Contributing Tools
+```bash
+# Copy g.opencode to your GRASS addon path
+cp -r g.opencode $GRASS_ADDON_PATH/
 
-Consider contributing new tools to the
-[GRASS GIS Addons repository](https://grass.osgeo.org/development/code-submission/)
-through pull request on GitHub.
-This provides maintenance support from the core team and easier distribution.
-Develop tools here first, then submit mature tools to the official addons.
+# Or use the included install.sh
+bash install.sh
+```
 
-## How to contribute to this repository
+## Configuration
 
-Fork the project and submit a pull request or open an issue.
+### Config File
+
+Create a config file to store default server settings:
+
+```bash
+# Default location: ~/.grass/g.opencode.conf
+```
+
+Or set via command:
+```
+g.opencode server="127.0.0.1" prompt="your question"
+```
+
+## Usage
+
+### Basic Query
+
+```bash
+g.opencode prompt="how do I merge two vector maps"
+```
+
+### With Custom Server
+
+```bash
+g.opencode prompt="your question" server="192.168.1.100"
+```
+
+### Verbose Output
+
+```bash
+g.opencode prompt="your question" --verbose
+```
+
+### Quiet Output
+
+```bash
+g.opencode prompt="your question" --quiet
+```
+
+### Help
+
+```bash
+g.opencode --help
+```
+
+## Project Structure
+
+```
+g.opencode/
+├── README.md              # This file
+├── DESIGN.md              # Architecture and design
+├── AGENTS.md             # Development guidelines
+├── install.sh            # Installation script
+├── man-pages/            # Module documentation
+├── testsuite/            # Test suite
+└── .opencode/           # OpenCode configuration
+```
+
+## Documentation
+
+- [g.opencode Manual](man-pages/g.opencode.md)
+- [GRASS GIS](https://grass.osgeo.org/)
+- [OpenCode](https://opencode.ai/)
+
+## License
+
+See LICENSE file for details.
+
+## Contributing
+
+Fork the repository and submit a pull request or open an issue.
